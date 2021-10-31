@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import "static/keymason/keymason/style.css";
 
 // =============================================================================
@@ -49,24 +49,53 @@ export type KeyMapRow = KeyMapKey[];
 
 export type KeyMap = KeyMapRow[];
 
-export const Keyboard = (props: { keymap: KeyMap }) => (
-  <div id="keyboard" className="selectable">
-    {props.keymap.map((row, index) => (
-      <KeyRow style={index % 2 === 1 ? { "--x": "0.5" } : undefined}>
-        {row.map((key) => (
-          // Assign active class to select
-          <KeyCap> 
-            {Boolean(key.shift) ? (
-              <>
-                <KeyLegend class="medium top left">{key.shift}</KeyLegend>
-                <KeyLegend class="medium bottom left">{key.key}</KeyLegend>
-              </>
-            ) : (
-              <KeyLegend>{key.key}</KeyLegend>
-            )}
-          </KeyCap>
-        ))}
-      </KeyRow>
-    ))}
-  </div>
-);
+export const Keyboard = (props: { keymap: KeyMap }) => {
+  const [pressedKeyCodes, setPressedKeyCodes] = useState<Set<KeyMapKey['code']>>(new Set())
+
+  const onKeydown = (e: KeyboardEvent) => {
+    if (!pressedKeyCodes.has(e.keyCode)) {
+      const nextPressedKeyCodes = new Set(pressedKeyCodes)
+      nextPressedKeyCodes.add(e.keyCode)
+      setPressedKeyCodes(nextPressedKeyCodes)
+    }
+  }
+
+  const onKeyup = (e: KeyboardEvent) => {
+    if (pressedKeyCodes.has(e.keyCode)) {
+      const nextPressedKeyCodes = new Set(pressedKeyCodes)
+      nextPressedKeyCodes.delete(e.keyCode)
+      setPressedKeyCodes(nextPressedKeyCodes)
+    }
+
+  }
+
+  useEffect(() => {
+    document.addEventListener('keydown', onKeydown)
+    document.addEventListener('keyup', onKeyup)
+    return () => {
+      document.removeEventListener('keydown', onKeydown)
+      document.removeEventListener('keyup', onKeyup)
+    }
+  })
+
+  return (
+    <div id="keyboard" className="selectable">
+      {props.keymap.map((row, index) => (
+        <KeyRow style={index % 2 === 1 ? { "--x": "0.5" } : undefined}>
+          {row.map((key) => (
+            <KeyCap class={pressedKeyCodes.has(key.code) ? "active" : undefined}>
+              {Boolean(key.shift) ? (
+                <>
+                  <KeyLegend class="medium top left">{key.shift}</KeyLegend>
+                  <KeyLegend class="medium bottom left">{key.key}</KeyLegend>
+                </>
+              ) : (
+                <KeyLegend>{key.key}</KeyLegend>
+              )}
+            </KeyCap>
+          ))}
+        </KeyRow>
+      ))}
+    </div>
+  );
+};
