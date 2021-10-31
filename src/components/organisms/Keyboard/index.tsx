@@ -11,29 +11,69 @@ type KeyMasonProps = {
   style?: { [key: string]: string | number }; // TODO: Add types for custom styles
 };
 
+type KeyCapProps = Omit<KeyMasonProps, "children"> & { keyMapKey: KeyMapKey };
+
 const KeyMasonComponent = function (props: KeyMasonProps & { tag: string }) {
   const { tag, ...other } = props;
   const Tag = props.tag as keyof JSX.IntrinsicElements;
   return <Tag {...other}>{props.children}</Tag>;
 };
 
-export const KeyLegend = (props: KeyMasonProps) => (
+const MasonKeyLegend = (props: KeyMasonProps) => (
   <KeyMasonComponent tag="k-legend" {...props}>
     {props.children}
   </KeyMasonComponent>
 );
 
-export const KeyCap = (props: KeyMasonProps) => (
+const MasonKeyCap = (props: KeyMasonProps) => (
   <KeyMasonComponent tag="k-cap" {...props}>
     {props.children}
   </KeyMasonComponent>
 );
 
-export const KeyRow = (props: KeyMasonProps) => (
+export const MasonKeyRow = (props: KeyMasonProps) => (
   <KeyMasonComponent tag="k-row" {...props}>
     {props.children}
   </KeyMasonComponent>
 );
+
+export const Keycap = (props: KeyCapProps) => {
+  const [isPressed, setIsPressed] = useState<boolean>(false);
+
+  const onKeydown = (e: KeyboardEvent) => {
+    if (e.keyCode === props.keyMapKey.code && !isPressed) setIsPressed(true);
+  };
+
+  const onKeyup = (e: KeyboardEvent) => {
+    if (e.keyCode === props.keyMapKey.code && isPressed) setIsPressed(false);
+  };
+
+  useEffect(() => {
+    document.addEventListener("keydown", onKeydown);
+    document.addEventListener("keyup", onKeyup);
+    return () => {
+      document.removeEventListener("keydown", onKeydown);
+      document.removeEventListener("keyup", onKeyup);
+    };
+  });
+
+  return (
+    <MasonKeyCap class={isPressed ? "active" : undefined}>
+      {Boolean(props.keyMapKey.shift) ? (
+        <>
+          <MasonKeyLegend class="medium top left">
+            {props.keyMapKey.shift}
+          </MasonKeyLegend>
+          <MasonKeyLegend class="medium bottom left">
+            {props.keyMapKey.key}
+          </MasonKeyLegend>
+        </>
+      ) : (
+        <MasonKeyLegend>{props.keyMapKey.key}</MasonKeyLegend>
+      )}
+    </MasonKeyCap>
+  );
+};
 
 // =============================================================================
 // KeyBoard
@@ -50,51 +90,43 @@ export type KeyMapRow = KeyMapKey[];
 export type KeyMap = KeyMapRow[];
 
 export const Keyboard = (props: { keymap: KeyMap }) => {
-  const [pressedKeyCodes, setPressedKeyCodes] = useState<Set<KeyMapKey['code']>>(new Set())
+  const [pressedKeyCodes, setPressedKeyCodes] = useState<
+    Set<KeyMapKey["code"]>
+  >(new Set());
 
   const onKeydown = (e: KeyboardEvent) => {
     if (!pressedKeyCodes.has(e.keyCode)) {
-      const nextPressedKeyCodes = new Set(pressedKeyCodes)
-      nextPressedKeyCodes.add(e.keyCode)
-      setPressedKeyCodes(nextPressedKeyCodes)
+      const nextPressedKeyCodes = new Set(pressedKeyCodes);
+      nextPressedKeyCodes.add(e.keyCode);
+      setPressedKeyCodes(nextPressedKeyCodes);
     }
-  }
+  };
 
   const onKeyup = (e: KeyboardEvent) => {
     if (pressedKeyCodes.has(e.keyCode)) {
-      const nextPressedKeyCodes = new Set(pressedKeyCodes)
-      nextPressedKeyCodes.delete(e.keyCode)
-      setPressedKeyCodes(nextPressedKeyCodes)
+      const nextPressedKeyCodes = new Set(pressedKeyCodes);
+      nextPressedKeyCodes.delete(e.keyCode);
+      setPressedKeyCodes(nextPressedKeyCodes);
     }
-
-  }
+  };
 
   useEffect(() => {
-    document.addEventListener('keydown', onKeydown)
-    document.addEventListener('keyup', onKeyup)
+    document.addEventListener("keydown", onKeydown);
+    document.addEventListener("keyup", onKeyup);
     return () => {
-      document.removeEventListener('keydown', onKeydown)
-      document.removeEventListener('keyup', onKeyup)
-    }
-  })
+      document.removeEventListener("keydown", onKeydown);
+      document.removeEventListener("keyup", onKeyup);
+    };
+  });
 
   return (
     <div id="keyboard" className="selectable">
       {props.keymap.map((row, index) => (
-        <KeyRow style={index % 2 === 1 ? { "--x": "0.5" } : undefined}>
+        <MasonKeyRow style={index % 2 === 1 ? { "--x": "0.5" } : undefined}>
           {row.map((key) => (
-            <KeyCap class={pressedKeyCodes.has(key.code) ? "active" : undefined}>
-              {Boolean(key.shift) ? (
-                <>
-                  <KeyLegend class="medium top left">{key.shift}</KeyLegend>
-                  <KeyLegend class="medium bottom left">{key.key}</KeyLegend>
-                </>
-              ) : (
-                <KeyLegend>{key.key}</KeyLegend>
-              )}
-            </KeyCap>
+            <Keycap keyMapKey={key} />
           ))}
-        </KeyRow>
+        </MasonKeyRow>
       ))}
     </div>
   );
