@@ -122,9 +122,9 @@ export const Keyboard = (props: { keymap: KeyMap }) => {
   return (
     <div id="keyboard" className="selectable">
       {props.keymap.map((row, index) => (
-        <MasonKeyRow style={index % 2 === 1 ? { "--x": "0.5" } : undefined}>
+        <MasonKeyRow key={`Keyboard-row-${index}`} style={index % 2 === 1 ? { "--x": "0.5" } : undefined}>
           {row.map((key) => (
-            <Keycap keyMapKey={key} />
+            <Keycap key={key.code} keyMapKey={key} />
           ))}
         </MasonKeyRow>
       ))}
