@@ -1,9 +1,4 @@
-import React, {
-  useState,
-  useEffect,
-  CSSProperties,
-  ChangeEvent,
-} from "react";
+import React, { useState, useEffect, CSSProperties, ChangeEvent } from "react";
 import { Keyboard } from "components/organisms/Keyboard";
 import { en_US } from "static/keymaps/en_US";
 
@@ -38,7 +33,7 @@ function App() {
 
   useEffect(() => {
     if (userInput && targetText && userInput === targetText) {
-      setVisibility('visible')
+      setVisibility("visible");
       const newLineIndex = lineIndex + 1;
       setLineIndex(newLineIndex);
       setTargetText(lines[newLineIndex]);

@@ -1868,6 +1868,11 @@
   dependencies:
     source-map "^0.6.1"
 
+"@types/wanakana@^4.0.3":
+  version "4.0.3"
+  resolved "https://registry.yarnpkg.com/@types/wanakana/-/wanakana-4.0.3.tgz#b67b133b223facbf28aba0338b79f523e92cf97a"
+  integrity sha512-AibaWzahBKizxmsAy8rEWSIqqcT0v9KZTS8S6zPLmStGBFdccYfXydhgwYOV+6lGqQ890MpA4h2MPET3uPk9Zg==
+
 "@types/webpack-sources@*":
   version "2.1.0"
   resolved "https://registry.yarnpkg.com/@types/webpack-sources/-/webpack-sources-2.1.0.tgz#8882b0bd62d1e0ce62f183d0d01b72e6e82e8c10"
@@ -11046,6 +11051,11 @@ walker@^1.0.7, walker@~1.0.5:
   integrity sha1-L3+bj9ENZ3JisYqITijRlhjgKPs=
   dependencies:
     makeerror "1.0.x"
+
+wanakana@^4.0.2:
+  version "4.0.2"
+  resolved "https://registry.yarnpkg.com/wanakana/-/wanakana-4.0.2.tgz#a7d60186724a56fd50e6e9c224628c09294901d8"
+  integrity sha512-lBFtnLJhTpp5wQBdH7TrOHhLxqmUabAfL86plNN8+iffyhosjZyx+kkO8KEBGR8zWH5nxSQ67oyx3W/lcEC8sg==
 
 watchpack-chokidar2@^2.0.1:
   version "2.0.1"
