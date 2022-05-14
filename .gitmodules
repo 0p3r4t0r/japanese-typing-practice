@@ -1,6 +1,3 @@
 [submodule "keymason"]
-	path = keymason
-	url = https://github.com/0p3r4t0r/keymason.git
-[submodule "src/static/keymason"]
 	path = src/static/keymason
 	url = https://github.com/0p3r4t0r/keymason.git
