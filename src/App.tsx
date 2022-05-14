@@ -29,7 +29,7 @@ function App() {
         setLines(textLines);
         setTargetText(textLines[lineIndex]);
       });
-  }, []);
+  }, [lineIndex]);
 
   useEffect(() => {
     if (userInput && targetText && userInput === targetText) {
@@ -39,7 +39,7 @@ function App() {
       setTargetText(lines[newLineIndex]);
       setUserInput("");
     }
-  }, [userInput]);
+  }, [userInput, lineIndex, lines, targetText]);
 
   useEffect(() => {
     if (visibility === "visible") {
