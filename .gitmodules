@@ -1,4 +1,4 @@
 [submodule "keymason"]
-	path = src/static/keymason
+	path = frontend/src/static/keymason
 	url = https://github.com/0p3r4t0r/keymason.git
     branch = deploy
