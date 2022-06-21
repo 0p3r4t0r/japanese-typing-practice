@@ -1,7 +1,9 @@
 {
     "cSpell.words": [
+        "fastapi",
         "Hankaku",
         "keymason",
+        "pydantic",
         "wanakana",
         "zenkaku"
     ]
